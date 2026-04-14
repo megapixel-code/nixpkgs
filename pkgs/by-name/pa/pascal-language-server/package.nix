@@ -1,6 +1,10 @@
 {
+  lib,
   stdenv,
   fetchFromGitHub,
+  fpc,
+  lazarus,
+  writableTmpDirAsHomeHook,
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "pascal-language-server";
@@ -10,6 +14,33 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "genericptr";
     repo = "pascal-language-server";
     rev = "80064e2a917596dc3a8b661ef2d13ba02bf7a020";
-    hash = "";
+    hash = "sha256-0GG8zEP2JCyWM5LQCWAvuVL6pIuRQMYrvrmsZ7HL9hE=";
+  };
+
+  nativeBuildInputs = [
+    fpc
+    lazarus
+    writableTmpDirAsHomeHook # lazarus tries to create files in $HOME/.lazarus
+  ];
+
+  buildPhase = ''
+    lazbuild --lazarusdir=${lazarus}/share/lazarus \
+      src/protocol/lspprotocol.lpk \
+      src/serverprotocol/lspserver.lpk \
+      src/standard/pasls.lpi
+  '';
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp -r src/standard/pasls $out/bin/pasls
+  '';
+
+  meta = {
+    description = "An LSP server implementation for Pascal variants that are supported by Free Pascal, including Object Pascal.";
+    homepage = "https://github.com/genericptr/pascal-language-server";
+    license = with lib.licenses; [ gpl3 ];
+    maintainers = with lib.maintainers; [ megapixel-code ];
+    mainProgram = "pasls";
+    platforms = lib.platforms.unix;
   };
 })
