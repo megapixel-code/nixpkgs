@@ -53,8 +53,6 @@ stdenv.mkDerivation (finalAttrs: {
     makeWrapper $out/opt/pasls $out/bin/pasls \
       --prefix PP : ${fpc}/bin/ppcx64 \
       --prefix FPCDIR : ${fpc}
-
-    exit 1
   '';
 
   meta = {
