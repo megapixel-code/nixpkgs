@@ -5,6 +5,7 @@
   fpc,
   lazarus,
   writableTmpDirAsHomeHook,
+  makeWrapper,
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "pascal-language-server";
@@ -21,6 +22,7 @@ stdenv.mkDerivation (finalAttrs: {
     fpc
     lazarus
     writableTmpDirAsHomeHook # lazarus tries to create files in $HOME/.lazarus
+    makeWrapper
   ];
 
   buildPhase = ''
@@ -32,7 +34,10 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     mkdir -p $out/bin
-    cp -r src/standard/pasls $out/bin/pasls
+    makeWrapper src/standard/pasls $out/bin/pasls \
+      --prefix PP=${fpc}/bin/fpc \
+      --prefix FPCDIR=${fpc} \
+      --prefix LAZARUSDIR=${lazarus}
   '';
 
   meta = {
