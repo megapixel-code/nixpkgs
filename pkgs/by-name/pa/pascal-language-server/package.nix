@@ -50,9 +50,9 @@ stdenv.mkDerivation (finalAttrs: {
     cp src/standard/pasls             $out/bin/pasls
 
     # cp src/standard/pasls $out/opt/pasls
-    makeWrapper $out/opt/pasls $out/bin/pasls \
-      --prefix PP : ${fpc}/bin/ppcx64 \
-      --prefix FPCDIR : ${fpc}
+    # makeWrapper $out/opt/pasls $out/bin/pasls \
+    #   --prefix PP : ${fpc}/bin/ppcx64 \
+    #   --prefix FPCDIR : ${fpc}
   '';
 
   meta = {
