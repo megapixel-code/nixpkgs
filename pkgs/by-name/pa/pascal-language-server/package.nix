@@ -35,8 +35,8 @@ stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     mkdir -p $out/bin
     makeWrapper src/standard/pasls $out/bin/pasls \
-      --prefix PP=${fpc}/bin/ppcx64 \
-      # --prefix FPCDIR=${fpc}/lib/fpc/src \
+      --prefix PP : ${fpc}/bin/ppcx64 \
+      # --prefix FPCDIR : ${fpc}/lib/fpc/src \
   '';
 
   meta = {
