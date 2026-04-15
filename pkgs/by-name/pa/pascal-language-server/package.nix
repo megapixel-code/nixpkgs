@@ -30,16 +30,31 @@ stdenv.mkDerivation (finalAttrs: {
       src/protocol/lspprotocol.lpk \
       src/serverprotocol/lspserver.lpk \
       src/standard/pasls.lpi
+
+    lazbuild --lazarusdir=${lazarus}/share/lazarus \
+      src/protocol/lspprotocol.lpk \
+      src/serverprotocol/lspserver.lpk \
+      src/proxy/paslsproxy.lpi
+
+    lazbuild --lazarusdir=${lazarus}/share/lazarus \
+      src/protocol/lspprotocol.lpk \
+      src/serverprotocol/lspserver.lpk \
+      src/socketserver/paslssock.lpi
   '';
 
   installPhase = ''
     mkdir -p $out/bin
     mkdir -p $out/opt
-    cp src/standard/pasls $out/opt/pasls
-    # cp src/standard/pasls $out/bin/pasls
+    cp src/socketserver/paslssock.lpi $out/bin/paslssock
+    cp src/proxy/paslsproxy           $out/bin/paslsproxy
+    cp src/standard/pasls             $out/bin/pasls
+
+    # cp src/standard/pasls $out/opt/pasls
     makeWrapper $out/opt/pasls $out/bin/pasls \
       --prefix PP : ${fpc}/bin/ppcx64 \
       --prefix FPCDIR : ${fpc}
+
+    exit 1
   '';
 
   meta = {
