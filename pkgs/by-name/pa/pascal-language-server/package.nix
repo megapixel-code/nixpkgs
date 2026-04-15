@@ -6,6 +6,7 @@
   lazarus,
   writableTmpDirAsHomeHook,
   makeWrapper,
+  bash,
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "pascal-language-server";
@@ -23,6 +24,7 @@ stdenv.mkDerivation (finalAttrs: {
     lazarus
     writableTmpDirAsHomeHook # lazarus tries to create files in $HOME/.lazarus
     makeWrapper
+    bash
   ];
 
   buildPhase = ''
@@ -45,14 +47,17 @@ stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     mkdir -p $out/bin
     mkdir -p $out/opt
-    cp src/socketserver/paslssock.lpi $out/bin/paslssock
-    cp src/proxy/paslsproxy           $out/bin/paslsproxy
-    cp src/standard/pasls             $out/bin/pasls
 
-    # cp src/standard/pasls $out/opt/pasls
-    # makeWrapper $out/opt/pasls $out/bin/pasls \
-    #   --prefix PP : ${fpc}/bin/ppcx64 \
-    #   --prefix FPCDIR : ${fpc}
+    cp src/socketserver/paslssock $out/bin/paslssock
+    cp src/proxy/paslsproxy       $out/bin/paslsproxy
+    # cp src/standard/pasls         $out/bin/pasls
+
+    # cp -r . $out
+
+    cp src/standard/pasls $out/opt/pasls
+    makeWrapper $out/opt/pasls $out/bin/pasls \
+      --prefix FPCDIR : ${lazarus}/share/fpcsrc \
+      # --prefix PP : ${fpc}/bin/ppcx64
   '';
 
   meta = {
