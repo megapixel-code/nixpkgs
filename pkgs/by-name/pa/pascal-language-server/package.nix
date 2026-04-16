@@ -57,8 +57,8 @@ stdenv.mkDerivation (finalAttrs: {
     cp src/standard/pasls $out/opt/pasls
     makeWrapper $out/opt/pasls $out/bin/pasls \
       --prefix FPCDIR : ${fpc}/lib/fpc/${fpc.version} \
-      --prefix LAZARUSDIR : ${lazarus}/share/lazarus \
-      --prefix PP : ${fpc}/bin/ppcx64
+      # --prefix LAZARUSDIR : ${lazarus}/share/lazarus \
+      # --prefix PP : ${fpc}/bin/ppcx64
   '';
 
   meta = {
