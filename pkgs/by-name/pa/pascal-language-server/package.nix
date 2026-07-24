@@ -50,13 +50,11 @@ stdenv.mkDerivation (finalAttrs: {
 
     cp src/socketserver/paslssock $out/bin/paslssock
     cp src/proxy/paslsproxy       $out/bin/paslsproxy
-    # cp src/standard/pasls         $out/bin/pasls
+    cp src/standard/pasls         $out/opt/pasls
 
-    # cp -r . $out
-
-    cp src/standard/pasls $out/opt/pasls
     makeWrapper $out/opt/pasls $out/bin/pasls \
       --prefix FPCDIR : ${fpc}/lib/fpc/${fpc.version} \
+      --prefix PP : ${fpc}/lib/fpc/${fpc.version}/ppcx64 \
       --prefix LAZARUSDIR : ${lazarus}/share/lazarus
   '';
 
