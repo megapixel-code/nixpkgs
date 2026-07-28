@@ -31,8 +31,9 @@ stdenv.mkDerivation (finalAttrs: {
     chmod +x src/build_fpc.sh
     LAZARUSDIR=${lazarus}/share/lazarus \
       FPC=${fpc}/bin/fpc \
-      FPC_CFG=${fpc}/etc/fpc.cfg \ # TODO: add pr to make build_fpc script responsive to this env var
+      FPC_CFG=${fpc}/etc/fpc.cfg \
       bash src/build_fpc.sh
+    # TODO: add pr to make build_fpc script responsive to this env var
   '';
 
   installPhase = ''
@@ -46,6 +47,11 @@ stdenv.mkDerivation (finalAttrs: {
       --prefix PP : ${fpc}/bin/fpc \
       --prefix LAZARUSDIR : ${lazarus}/share/lazarus
   '';
+
+  propagatedBuildInputs = [
+    lazarus
+    fpc
+  ];
 
   meta = {
     description = "An LSP server implementation for Pascal variants that are supported by Free Pascal, including Object Pascal.";
