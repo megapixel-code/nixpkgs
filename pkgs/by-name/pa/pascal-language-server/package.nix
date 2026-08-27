@@ -28,24 +28,44 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildPhase = ''
-    chmod +x src/build_fpc.sh
-    LAZARUSDIR=${lazarus}/share/lazarus \
-      FPC=${fpc}/bin/fpc \
-      FPC_CFG=${fpc}/etc/fpc.cfg \
-      bash src/build_fpc.sh
+    # chmod +x src/build_fpc.sh
+    # LAZARUSDIR=${lazarus}/share/lazarus \
+    #   FPC=${fpc}/bin/fpc \
+    #   FPC_CFG=${fpc}/etc/fpc.cfg \
+    #   bash src/build_fpc.sh
     # TODO: add pr to make build_fpc script responsive to this env var
+
+    lazbuild --lazarusdir=${lazarus}/share/lazarus \
+      src/protocol/lspprotocol.lpk \
+      src/serverprotocol/lspserver.lpk \
+      -B src/standard/pasls.lpr
+
+    # lazbuild --lazarusdir=${lazarus}/share/lazarus \
+    #   src/protocol/lspprotocol.lpk \
+    #   src/serverprotocol/lspserver.lpk \
+    #   src/proxy/paslsproxy.lpi
+    #
+    # lazbuild --lazarusdir=${lazarus}/share/lazarus \
+    #   src/protocol/lspprotocol.lpk \
+    #   src/serverprotocol/lspserver.lpk \
+    #   src/socketserver/paslssock.lpi
   '';
 
   installPhase = ''
     mkdir -p "$out/bin"
     mkdir -p "$out/opt"
 
+    cp src/standard/pasls         $out/opt/pasls
+    # cp src/socketserver/paslssock $out/bin/paslssock
+    # cp src/proxy/paslsproxy       $out/bin/paslsproxy
+
+    makeWrapper "$out/opt/pasls" "$out/bin/pasls"   \
+    --prefix FPCDIR : ${fpc}/lib/fpc/${fpc.version} \
+    --prefix PP : ${fpc}/bin/fpc                    \
+    --prefix LAZARUSDIR : ${lazarus}/share/lazarus
+
     # FIXME: x86_64-linux replace with correct
-    cp dist/x86_64-linux/pasls "$out/opt/pasls"
-    makeWrapper "$out/opt/pasls" "$out/bin/pasls" \
-      --prefix FPCDIR : ${lazarus}/share/fpcsrc \
-      --prefix PP : ${fpc}/bin/fpc \
-      --prefix LAZARUSDIR : ${lazarus}/share/lazarus
+    # cp dist/x86_64-linux/pasls "$out/opt/pasls"
   '';
 
   propagatedBuildInputs = [
